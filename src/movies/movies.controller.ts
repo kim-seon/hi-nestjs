@@ -8,6 +8,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { CreateMovieDTO } from './dto/create-movie.dto';
+import { UpdateMovieDTO } from './dto/update-movie.dto';
 import { Movie } from './entities/movie.entity';
 import { MoviesService } from './movies.service';
 
@@ -26,28 +28,26 @@ export class MoviesController {
   }
 
   @Get(':id') // 무언가 필요하면 요청해야만 함
-  getOne(@Param('id') movieId: string): Movie {
+  getOne(@Param('id') movieId: number): Movie {
+    console.log(typeof movieId);
     //
     // @Params 데코레이터를 써야만 url에 있는 id parameter를 원하는 것을 앎(위랑 아래 Params 안이랑 이름이 같아야 함)
     return this.moviesService.getOne(movieId);
   }
 
   @Post()
-  create(@Body() movieData) {
+  create(@Body() movieData: CreateMovieDTO) {
     return this.moviesService.create(movieData);
   }
 
   @Delete(':id')
-  remove(@Param('id') movieId: string) {
+  remove(@Param('id') movieId: number) {
     return this.moviesService.deleteOne(movieId);
   }
 
   @Patch(':id')
-  path(@Param('id') movieId: string, @Body() updateData) {
-    return {
-      updatedData: movieId,
-      ...updateData,
-    };
+  path(@Param('id') movieId: number, @Body() updateData: UpdateMovieDTO) {
+    return this.moviesService.update(movieId, updateData);
   }
 
   // @Put() // 전체 movie 업데이트
